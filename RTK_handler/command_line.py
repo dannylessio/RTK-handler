@@ -5,7 +5,11 @@ from .tools import print_help
 from .geometry_maker import create_geometry
 from .projections_handler import normalize_projections
 
-option = sys.argv[1]
+# Try to get the first parameter, if it does not exist print_help
+try:
+    option = sys.argv[1]
+except:
+    option = sys.argv[0]
 
 def main():
     if option   == "help":

@@ -11,6 +11,7 @@ try:
 except:
     option = sys.argv[0]
 
+
 def main():
     if option   == "help":
         print_help()
@@ -20,18 +21,18 @@ def main():
         setup()
         sys.exit(0)
 
-    elif option == "make-structure":
+    elif option == "make-struct":
         assert_setup()
         make_structure()
         sys.exit(0)
 
-    elif option == "create-geometry":
+    elif option == "create-geom":
         assert_setup()
         assert_structure()
         create_geometry()
         sys.exit(0)
 
-    elif option == "normalize-projections":
+    elif option == "norm-proj":
         assert_setup()
         assert_structure()
         normalize_projections()

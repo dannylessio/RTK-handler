@@ -2,9 +2,10 @@ import os
 import sys
 import pickle
 import subprocess
+import shutil
 
 def print_help():
-    print('\nUsage: RTK-handler opt\n\nopt-0 : help\nopt-1 : make-struct\nopt-2 : create-geom\nopt-3 : norm-proj\nopt-4 : insert-RTK-path\n')
+    print('\nUsage: RTK-handler opt\n\nopt-0 : help\nopt-1 : make-struct\nopt-2 : create-geom\nopt-3 : norm-proj\nopt-4 : insert-RTK-path\nopt-5 : clean-structure\n')
 
 
 ''' Reads from keyboard the RTK-bin absolute path and stores it inside conf.py '''
@@ -113,3 +114,27 @@ def assert_structure():
     except ValueError as e:
         print(e)
         sys.exit(1)
+
+'''
+    Clean the previous generated structure
+'''
+def clean_structure():
+
+    # copy relevant files inside folders
+    dest = os.getcwd()
+
+    srcList = [os.path.join('csv'), os.path.join('geometry'), os.path.join('projections','non_normalized','mha')]
+
+    for src in srcList:
+        src_files = os.listdir(src)
+        for file_name in src_files:
+            full_file_name = os.path.join(src, file_name)
+            if (os.path.isfile(full_file_name)):
+                shutil.move(full_file_name, dest)
+
+    # delete folders
+    shutil.rmtree(os.path.join('csv'))
+    shutil.rmtree(os.path.join('geometry'))
+    shutil.rmtree(os.path.join('projections'))
+    shutil.rmtree(os.path.join('reconstructions'))
+    print("Structure successfully cleaned.")

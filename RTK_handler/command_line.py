@@ -1,6 +1,6 @@
 import sys
 from .tools import insert_RTK_path, assert_RTK_path
-from .tools import make_structure, assert_structure
+from .tools import make_structure, assert_structure, clean_structure
 from .tools import print_help
 from .geometry_maker import create_geometry
 from .projections_handler import normalize_projections
@@ -33,6 +33,11 @@ def main():
 
     elif option == "insert-RTK-path":
         insert_RTK_path()
+        sys.exit(0)
+
+    elif option == "clean-structure":
+        assert_structure()
+        clean_structure()
         sys.exit(0)
 
     else:

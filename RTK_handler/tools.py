@@ -22,7 +22,7 @@ def insert_RTK_path():
         stored = { 'rtk_path' : abs_path }
 
         # Write this path on file in binary mode, Overwrites the file if it exists.
-        f = open("store.pkl", "wb")
+        f = open(".store.pkl", "wb")
         pickle.dump(stored, f)
         f.close()
 
@@ -35,7 +35,7 @@ def insert_RTK_path():
 
 def assert_RTK_path():
     try:
-        f = open("store.pkl", "rb")
+        f = open(".store.pkl", "rb")
         f.close()
     except:
         print("Please run the setup option first.\n")

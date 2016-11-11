@@ -73,8 +73,8 @@ class GeometryMaker( object ):
             self._rtk_geometry = SimpleRTK.ThreeDCircularProjectionGeometry()
 
             for projection in self._projectionObjectList:
-                proj_offset_x = - projection.isox * self._pixel_size_direction_u
-                proj_offset_y = - projection.isoy * self._pixel_size_direction_v
+                proj_offset_x = - projection.iso_u * self._pixel_size_direction_u
+                proj_offset_y = - projection.iso_v * self._pixel_size_direction_v
 
                 self._rtk_geometry.AddProjection(
                     self._source_to_isocenter_distance,

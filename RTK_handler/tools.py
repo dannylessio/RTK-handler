@@ -230,7 +230,7 @@ def fdk_default_reconstruction( source ):
     else:
         rootFolder = os.getcwd()
 
-        projections_folder = os.path.join(rootFolder, __path_of['projections_normalized_set_of_tiff'] )
+        projections_folder = os.path.join(rootFolder, __path_of['projections_non_normalized_set_of_tiff'] )
 
         output_path = os.path.join( rootFolder, __path_of['reconstructions_from_tiff_without_norm_proj'], 'non_norm_tiff_recon.mha' )
 

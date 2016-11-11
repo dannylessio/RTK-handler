@@ -80,8 +80,8 @@ class ProjectionsHandler( object ):
             reader.SetFileName(inputPath + projection.name)
             image = reader.Execute()
 
-            # normalize multiplying by 1/correctionValue
-            image = image * float(projection.getOneOverCorrection())
+            # normalize
+            image = image * float( 1 / projection.io )
             image = SimpleITK.Log(image)
             image = image * float(-1)
 

@@ -167,7 +167,7 @@ def rtkfdk_reconstruction():
         rootFolder = os.getcwd()
 
         projections_folder = os.path.join(
-            rootFolder, __path_of['projections_normalized_mha'])
+            rootFolder, __path_of['projections_normalized'])
         projections_name = str(os.listdir(projections_folder)[0])
 
         output_path = os.path.join(

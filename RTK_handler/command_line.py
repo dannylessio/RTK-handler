@@ -2,7 +2,7 @@ import sys
 import argparse
 from .tools import insert_RTK_path, assert_RTK_path
 from .tools import make_structure, assert_structure, clean_structure
-from .tools import rtkdfk_reconstruction
+from .tools import rtkfdk_reconstruction
 from .geometry_maker import create_geometry
 from .projections_handler import normalize_projections
 

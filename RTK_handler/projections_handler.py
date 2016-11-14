@@ -8,11 +8,10 @@ from .csv_handler import CsvHandler
 
 class ProjectionsHandler(object):
     def normalize_mha(self):
-        inputPath = os.path.join('projections', 'non_normalized', 'mha')
+        inputPath = os.path.join('projections', 'non_normalized')
         output_path = os.path.join(
                 'projections',
                 'normalized',
-                'mha',
                 'normalized.mha')
 
         # Getting MHA name

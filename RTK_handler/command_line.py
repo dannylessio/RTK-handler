@@ -2,10 +2,10 @@ import sys
 import argparse
 from .tools import insert_RTK_path, assert_RTK_path
 from .tools import make_structure, assert_structure, clean_structure
-from .tools import ask_for_projection_source
-from .tools import fdk_default_reconstruction
+from .tools import rtkdfk_reconstruction
 from .geometry_maker import create_geometry
 from .projections_handler import normalize_projections
+
 
 def main():
 
@@ -19,13 +19,19 @@ def main():
                         dest='create_geometry',
                         help='Create the .xml geometry reading from csv file.')
 
-    parser.add_argument('-n', action='store_true', default=False,
-                        dest='normalize_projections',
-                        help='Normalize the mha set of projections reading from a csv file.')
+    parser.add_argument(
+        '-n',
+        action='store_true',
+        default=False,
+        dest='normalize_projections',
+        help='Normalize the mha set of projections reading from a csv file.')
 
-    parser.add_argument('-c', action='store_true', default=False,
-                        dest='clean_structure',
-                        help='Delete the folder structure, preserve relevant data.')
+    parser.add_argument(
+        '-c',
+        action='store_true',
+        default=False,
+        dest='clean_structure',
+        help='Delete the folder structure, preserve relevant data.')
 
     parser.add_argument('-p', action='store_true', default=False,
                         dest='insert_rtk_path',
@@ -35,7 +41,11 @@ def main():
                         dest='rtkfdk_reconstruction',
                         help='Reconstruct with rtkfdk')
 
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
+    parser.add_argument(
+        '-v',
+        '--version',
+        action='version',
+        version='%(prog)s 1.0')
 
     # Print the help if no options are given
     if len(sys.argv) < 2:
@@ -52,13 +62,13 @@ def main():
 
     if options.create_geometry:
         assert_structure()
-        #assert_csv()
+        # assert_csv()
         create_geometry()
         sys.exit(0)
 
     if options.normalize_projections:
         assert_structure()
-        #assert_csv()
+        # assert_csv()
         normalize_projections()
         sys.exit(0)
 
@@ -74,9 +84,8 @@ def main():
     if options.rtkfdk_reconstruction:
         assert_structure()
         assert_RTK_path()
-        source = ask_for_projection_source()
-        #assert_projection_source(source)
-        fdk_default_reconstruction( source )
+        # assert_normalized_proj()
+        rtkfdk_reconstruction()
         sys.exit(0)
 
 if __name__ == "__main__":

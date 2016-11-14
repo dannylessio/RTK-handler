@@ -1,4 +1,4 @@
-class Projection( object ):
+class Projection(object):
     """ This class handles all the parameters regarding one projection """
 
     def __init__(self, name, angle, iso_u, iso_v, io):

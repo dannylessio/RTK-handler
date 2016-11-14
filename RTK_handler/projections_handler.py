@@ -67,8 +67,9 @@ class ProjectionsHandler(object):
             # convert the 2d slice into a 3d volume slice
             slice_vol = sitk.JoinSeries(image)
 
-            # paste the 3d white slice into the black volume
-            normalized_mha = sitk.Paste(normalized_mha, slice_vol, slice_vol.GetSize(), destinationIndex=[0,0,zslice])
+            # replace the new 3d volume slice into the old position
+            normalized_mha = sitk.Paste(normalized_mha, slice_vol, 
+                slice_vol.GetSize(), destinationIndex=[0,0,zslice])
         
         sitk.WriteImage(normalized_mha, output_path)
         print(output_path + " successfully writed")

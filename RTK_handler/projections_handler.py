@@ -1,8 +1,7 @@
-import SimpleITK
+import SimpleITK as sitk
 import sys
 import os
 import glob
-import pyexcel
 from .projection import Projection
 from .csv_handler import CsvHandler
 
@@ -33,45 +32,45 @@ class ProjectionsHandler(object):
             csvFolder)
 
         # Read
-        non_normalized_mha = SimpleITK.ReadImage(mhaPath)
+        non_normalized_mha = sitk.ReadImage(mhaPath)
 
-        # Create a copy
-        normalized_mha = SimpleITK.ReadImage(mhaPath)
+        # Readinfo
+        width = non_normalized_mha.GetWidth()
+        height = non_normalized_mha.GetHeight()
+        depth = non_normalized_mha.GetDepth()
         
-        # Normalize
-        size = list(non_normalized_mha.GetSize())
-        zdim = size[2]
-        size[2] = 0
-
-        # assert dimension csv and zdim
-        if len(listOfProjectionObjects) != zdim:
+        # open a copy
+        normalized_mha = sitk.ReadImage(mhaPath)
+        
+        # assert dimension csv and depth
+        if len(listOfProjectionObjects) != depth:
             print("Error csv dim and proj dime aren't the same.")
             sys.exit()
 
-        for zslice in range(0, zdim):
+        # Normalize
+        for zslice in range(0, depth):
 
             print("Normalize projection n " + str(zslice+1))
-            index = [0, 0, zslice]
 
-            Extractor = SimpleITK.ExtractImageFilter()
-            Extractor.SetSize(size)
-            Extractor.SetIndex(index)
+            extractor = sitk.ExtractImageFilter()
+            extractor.SetSize([width, height, 0])
+            extractor.SetIndex([0, 0, zslice])
 
             # Extract projection from non_normalized_mha
-            image = Extractor.Execute(non_normalized_mha)
+            image = extractor.Execute(non_normalized_mha)
                 
             # normalize it
             image = image * float(1 / listOfProjectionObjects[zslice].io)
-            image = SimpleITK.Log(image)
+            image = sitk.Log(image)
             image = image * float(-1)
 
             # convert the 2d slice into a 3d volume slice
-            slice_vol = SimpleITK.JoinSeries(image)
+            slice_vol = sitk.JoinSeries(image)
 
             # paste the 3d white slice into the black volume
-            normalized_mha = SimpleITK.Paste(normalized_mha, slice_vol, slice_vol.GetSize(), destinationIndex=[0,0,zslice])
+            normalized_mha = sitk.Paste(normalized_mha, slice_vol, slice_vol.GetSize(), destinationIndex=[0,0,zslice])
         
-        SimpleITK.WriteImage(normalized_mha, output_path)
+        sitk.WriteImage(normalized_mha, output_path)
         print(output_path + " successfully writed")
            
 

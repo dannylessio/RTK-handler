@@ -71,6 +71,8 @@ class GeometryMaker(object):
             for projection in self._projectionObjectList:
                 proj_offset_x = - projection.iso_u * self._pixel_size_direction_u
                 proj_offset_y = - projection.iso_v * self._pixel_size_direction_v
+                # proj_offset_x = 0
+                # proj_offset_y = 0
 
                 self._rtk_geometry.AddProjection(
                     self._source_to_isocenter_distance,

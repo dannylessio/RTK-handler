@@ -1,4 +1,4 @@
-import SimpleRTK
+import SimpleRTK as srtk
 import sys
 import os
 import glob
@@ -23,6 +23,11 @@ class GeometryMaker(object):
 
     def __init__(self):
         # Detector variables
+        self._Nu
+        self._Nv
+        self._du
+        self._dv
+
         self._pixel_size_direction_u = 0
         self._pixel_size_direction_v = 0
         self._source_to_isocenter_distance = 0
@@ -37,17 +42,17 @@ class GeometryMaker(object):
 
     def add_detector_info(self):
         try:
-            self._pixel_size_direction_u = float(
-                input("Insert du: single pixel detector size on u direction (in mm)\n"))
+            self._du = float(
+                input("insert du   - Single pixel length in mm, u dir\n"))
 
-            self._pixel_size_direction_v = float(
-                input("Insert dv: single pixel detector size on v direction (in mm)\n"))
+            self._dv = float(
+                input("insert dv   - Single pixel length in mm, v dir\n"))
 
             self._source_to_isocenter_distance = float(
-                input("Insert sid: source to isocenter distance (in mm)\n"))
+                input("insert SID  - Source to Isocenter Distance, in mm\n"))
 
             self._source_to_detector_distance = float(
-                input("Insert sdd: source to detector distance (in mm)\n"))
+                input("insert SDD  - Source to Detector Distance, in mm\n"))
 
         except ValueError:
             print("Error on input format")
@@ -66,11 +71,15 @@ class GeometryMaker(object):
 
     def fill_rtk_geometry(self):
         try:
-            self._rtk_geometry = SimpleRTK.ThreeDCircularProjectionGeometry()
+            self._rtk_geometry = srtk.ThreeDCircularProjectionGeometry()
 
             for projection in self._projectionObjectList:
-                proj_offset_x = - projection.iso_u * self._pixel_size_direction_u
-                proj_offset_y = - projection.iso_v * self._pixel_size_direction_v
+                # if N_off_u == 0 nothing happens
+                proj_offset_x = projection.N_off_u * self._du
+                proj_offset_y = projection.N_off_v * self._dv
+                
+                #proj_offset_x = - projection.iso_u * self._pixel_size_direction_u
+                #proj_offset_y = - projection.iso_v * self._pixel_size_direction_v
                 # proj_offset_x = 0
                 # proj_offset_y = 0
 
@@ -100,7 +109,7 @@ class GeometryMaker(object):
 
             print("Writing geometry to .xml file...")
 
-            geometrywriter = SimpleRTK.ThreeDCircularProjectionGeometryXMLFileWriter()
+            geometrywriter = srtk.ThreeDCircularProjectionGeometryXMLFileWriter()
             geometrywriter.SetFileName(output_path)
             geometrywriter.Execute(self._rtk_geometry)
 

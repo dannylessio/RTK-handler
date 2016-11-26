@@ -1,9 +1,9 @@
 class Projection(object):
     """ This class handles all the parameters regarding one projection """
 
-    def __init__(self, name, angle, iso_u, iso_v, io):
+    def __init__(self, name, angle, N_off_u, N_off_v, io):
         self.name = name
         self.angle = float(angle)
-        self.iso_u = float(iso_u)
-        self.iso_v = float(iso_v)
+        self.N_off_u = float(N_off_u)
+        self.N_off_v = float(N_off_v)
         self.io = float(io)

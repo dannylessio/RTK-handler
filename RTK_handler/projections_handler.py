@@ -6,6 +6,7 @@ from .projection import Projection
 from .csv_handler import CsvHandler
 
 class ProjectionsHandler(object):
+
     def normalize_mha(self):
         inputPath = os.path.join('projections', 'non_normalized')
         output_path = os.path.join(
@@ -75,9 +76,38 @@ class ProjectionsHandler(object):
         print(output_path + " successfully writed")
            
 
+    def set_mha_origin(self):
+        
+        inputPath = os.path.join(
+                'projections',
+                'normalized',
+                'normalized.mha')
+        
+        output_path = os.path.join(
+                'projections',
+                'normalized',
+                'normalized.mha')
+
+        # read it
+        normalized_mha = sitk.ReadImage(inputPath)
+
+        # set origin ex -( Nx/2 + 0.5 ) 
+        x = - (normalized_mha.GetWidth()  + 1) / 2
+        y = - (normalized_mha.GetHeight() + 1) / 2
+        z = - (normalized_mha.GetHeight() + 1) / 2
+        
+        normalized_mha.SetOrigin([x, y, z])
+        
+        # replace it
+        sitk.WriteImage(normalized_mha, output_path)
+
+
 def normalize_projections():
     # Create ProjectionsHandler object
     ph = ProjectionsHandler()
 
     # Perform normalization
     ph.normalize_mha()
+
+    # update mha origin
+    ph.set_mha_origin()

@@ -12,12 +12,12 @@ class CsvHandler(object):
 
     The csv file must be set as follows:
     +-----------+-------+-------+-------+----+
-    | proj_name | angle | iso_u | iso_v | Io |
+    | proj_name | angle | N_off_u | N_off_v | Io |
     +-----------+-------+-------+-------+----+
 
     For example, Row 0 must be like:
     +-----------+---------+---------+---------+----------+
-    | 00000.tif | 0       | 479.440 | 290.950 | 1604.774 |
+    | 00000.tif | 0       | 479.440 | 290.950 | 1604.774 | <TODO>
     +-----------+---------+---------+---------+----------+
 
     Row 1 like:

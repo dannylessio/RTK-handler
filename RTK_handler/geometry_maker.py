@@ -23,40 +23,28 @@ class GeometryMaker(object):
 
     def __init__(self):
         # Detector variables
-        self._Nu
-        self._Nv
-        self._du
-        self._dv
-
-        self._pixel_size_direction_u = 0
-        self._pixel_size_direction_v = 0
-        self._source_to_isocenter_distance = 0
-        self._source_to_detector_distance = 0
-
-        self._geometry_name = 'geometry.xml'
-        self._projectionObjectList = []
-        self._rtk_geometry = False
-        self._csvh = False
-
-    ' Adds detector informations reading from keyboard '
-
-    def add_detector_info(self):
         try:
             self._du = float(
                 input("insert du   - Single pixel length in mm, u dir\n"))
 
             self._dv = float(
                 input("insert dv   - Single pixel length in mm, v dir\n"))
-
+            
             self._source_to_isocenter_distance = float(
                 input("insert SID  - Source to Isocenter Distance, in mm\n"))
-
+            
             self._source_to_detector_distance = float(
                 input("insert SDD  - Source to Detector Distance, in mm\n"))
 
         except ValueError:
             print("Error on input format")
             sys.exit()
+
+        # Other variables    
+        self._geometry_name = 'geometry.xml'
+        self._projectionObjectList = []
+        self._rtk_geometry = False
+        self._csvh = False
 
     ' Get projection object list from csv file '
 
@@ -124,7 +112,6 @@ def create_geometry():
     gm = GeometryMaker()
 
     # Perform creation
-    gm.add_detector_info()
     gm.get_projection_object_list()
     gm.fill_rtk_geometry()
     gm.write_geometry_to_file()

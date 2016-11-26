@@ -7,6 +7,19 @@ from .csv_handler import CsvHandler
 
 class ProjectionsHandler(object):
 
+    def __init__(self):
+        # Detector variables
+        try:
+            self._du = float(
+                input("insert du   - Single pixel length in mm, u dir\n"))
+
+            self._dv = float(
+                input("insert dv   - Single pixel length in mm, v dir\n"))
+
+        except ValueError:
+            print("Error on input format")
+            sys.exit()
+
     def normalize_mha(self):
         inputPath = os.path.join('projections', 'non_normalized')
         output_path = os.path.join(
@@ -92,14 +105,15 @@ class ProjectionsHandler(object):
         normalized_mha = sitk.ReadImage(inputPath)
 
         # set origin ex -( Nx/2 + 0.5 ) 
-        x = - (normalized_mha.GetWidth()  + 1) / 2
-        y = - (normalized_mha.GetHeight() + 1) / 2
-        z = - (normalized_mha.GetHeight() + 1) / 2
-        
+        x = - self._du * (normalized_mha.GetWidth()  + 1) / 2
+        y = - self._dv * (normalized_mha.GetHeight() + 1) / 2
+        z = -  0 * (normalized_mha.GetDepth() + 1)  / 2
+       #z = - self._dz * (normalized_mha.GetDepth() + 1)  / 2
         normalized_mha.SetOrigin([x, y, z])
         
         # replace it
         sitk.WriteImage(normalized_mha, output_path)
+        print("Updated normalized origin:",x,y,z)
 
 
 def normalize_projections():

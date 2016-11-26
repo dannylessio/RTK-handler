@@ -107,9 +107,9 @@ class ProjectionsHandler(object):
         # set origin ex -( Nx/2 + 0.5 ) 
         x = - self._du * (normalized_mha.GetWidth()  + 1) / 2
         y = - self._dv * (normalized_mha.GetHeight() + 1) / 2
-        z = -  0 * (normalized_mha.GetDepth() + 1)  / 2
-       #z = - self._dz * (normalized_mha.GetDepth() + 1)  / 2
-        normalized_mha.SetOrigin([x, y, z])
+        
+        # third dimension doen't matter, we have a stack of 2D slices.
+        normalized_mha.SetOrigin([x, y, 0])
         
         # replace it
         sitk.WriteImage(normalized_mha, output_path)

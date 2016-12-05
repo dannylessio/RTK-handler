@@ -50,17 +50,17 @@ class ProjectionsHandler(object):
         listOfProjectionObjects = csvHandler.get_projection_object_list_from_csv(
             csvFolder)
 
-        # Read
-        non_normalized_mha = sitk.ReadImage(mhaPath)
+        # Read the non-normalized Stack
+        stack = sitk.ReadImage(mhaPath)
 
         # Readinfo
-        width = non_normalized_mha.GetWidth()
-        height = non_normalized_mha.GetHeight()
-        depth = non_normalized_mha.GetDepth()
+        width = stack.GetWidth()
+        height = stack.GetHeight()
+        depth = stack.GetDepth()
         
-        # open a copy
-        normalized_mha = sitk.ReadImage(mhaPath)
-        
+        # list of normalized projections
+        norm_proj_list = []
+
         # assert dimension csv and depth
         if len(listOfProjectionObjects) != depth:
             print("Error csv dim and proj dime aren't the same.")
@@ -75,22 +75,26 @@ class ProjectionsHandler(object):
             extractor.SetSize([width, height, 0])
             extractor.SetIndex([0, 0, zslice])
 
-            # Extract projection from non_normalized_mha
-            image = extractor.Execute(non_normalized_mha)
+            # Extract a single projection
+            proj = extractor.Execute(stack)
                 
-            # normalize it
-            image = image * float(1 / listOfProjectionObjects[zslice].io)
-            image = sitk.Log(image)
-            image = image * float(-1)
+            # Normalize it
+            proj = proj * float(1 / listOfProjectionObjects[zslice].io)
+            proj = sitk.Log(proj)
+            proj = proj * float(-1)
 
-            # convert the 2d slice into a 3d volume slice
-            slice_vol = sitk.JoinSeries(image)
+            # append it to the list of normalized projections
+            norm_proj_list.append(proj)
 
-            # replace the new 3d volume slice into the old position
-            normalized_mha = sitk.Paste(normalized_mha, slice_vol, 
-                slice_vol.GetSize(), destinationIndex=[0,0,zslice])
         
-        sitk.WriteImage(normalized_mha, output_path)
+        # Join normalized projections into a single 3D MHA image
+        norm_stack = sitk.JoinSeries(norm_proj_list)
+        
+        # Copy the meta-information from original Stack
+        norm_stack.CopyInformation(stack)
+
+        # Write it to file
+        sitk.WriteImage(norm_stack, output_path)
         print(output_path + " successfully writed")
            
 

@@ -8,13 +8,18 @@ from .csv_handler import CsvHandler
 class ProjectionsHandler(object):
 
     def __init__(self):
-        # Detector variables
         try:
             self._du = float(
-                input("insert du   - Single pixel length in mm, u dir\n"))
+                input("insert du - Single pixel length in mm, u dir\n"))
 
             self._dv = float(
-                input("insert dv   - Single pixel length in mm, v dir\n"))
+                input("insert dv - Single pixel length in mm, v dir\n"))
+
+            self._Niso_u = float(
+                input("insert Niso_u - Isocenter position, pixel number, u dir\n"))
+
+            self._Niso_v = float(
+                input("insert Niso_u - Isocenter position, pixel number, v dir\n"))
 
         except ValueError:
             print("Error on input format")
@@ -89,7 +94,7 @@ class ProjectionsHandler(object):
         print(output_path + " successfully writed")
            
 
-    def set_mha_origin(self):
+    def set_mha_origin_as_isocenter_position(self):
         
         inputPath = os.path.join(
                 'projections',
@@ -104,16 +109,21 @@ class ProjectionsHandler(object):
         # read it
         normalized_mha = sitk.ReadImage(inputPath)
 
-        # set origin ex -( Nx/2 + 0.5 ) 
-        x = - self._du * (normalized_mha.GetWidth()  + 1) / 2
-        y = - self._dv * (normalized_mha.GetHeight() + 1) / 2
-        
+        # Image Origin as Isocenter position on ITK reference system.
+        # origin_x = - Niso_u * du
+        # origin_y = - (Nv - Niso_v - 1) * dv
+
+        # retrieve Nv as image height
+        Nv = normalized_mha.GetHeight()
+        origin_x = - (self._Niso_u * self._du)
+        origin_y = - (Nv - self._Niso_v - 1) * self._dv
+
         # third dimension doen't matter, we have a stack of 2D slices.
-        normalized_mha.SetOrigin([x, y, 0])
+        normalized_mha.SetOrigin([origin_x, origin_y, 0])
         
-        # replace it
+        # replace normalized mha
         sitk.WriteImage(normalized_mha, output_path)
-        print("Updated normalized origin:",x,y,z)
+        print("Updated normalized origin:",origin_x,origin_y,0)
 
 
 def normalize_projections():
@@ -123,5 +133,5 @@ def normalize_projections():
     # Perform normalization
     ph.normalize_mha()
 
-    # update mha origin
-    ph.set_mha_origin()
+    # Change MHA origin
+    ph.set_mha_origin_as_isocenter_position()

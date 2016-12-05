@@ -24,12 +24,6 @@ class GeometryMaker(object):
     def __init__(self):
         # Detector variables
         try:
-            self._du = float(
-                input("insert du   - Single pixel length in mm, u dir\n"))
-
-            self._dv = float(
-                input("insert dv   - Single pixel length in mm, v dir\n"))
-            
             self._source_to_isocenter_distance = float(
                 input("insert SID  - Source to Isocenter Distance, in mm\n"))
             
@@ -61,15 +55,11 @@ class GeometryMaker(object):
         try:
             self._rtk_geometry = srtk.ThreeDCircularProjectionGeometry()
 
-            for projection in self._projectionObjectList:
-                # if N_off_u == 0 nothing happens
-                proj_offset_x = projection.N_off_u * self._du
-                proj_offset_y = projection.N_off_v * self._dv
-                
-                #proj_offset_x = - projection.iso_u * self._pixel_size_direction_u
-                #proj_offset_y = - projection.iso_v * self._pixel_size_direction_v
-                # proj_offset_x = 0
-                # proj_offset_y = 0
+            for projection in self._projectionObjectList: 
+
+                # If the isocenter changes between projections, update this.
+                proj_offset_x = 0
+                proj_offset_y = 0
 
                 self._rtk_geometry.AddProjection(
                     self._source_to_isocenter_distance,
@@ -80,6 +70,7 @@ class GeometryMaker(object):
         except:
             print("Error using SimpleRTK.ThreeDCircularProjectionGeometry().")
             sys.exit(1)
+
 
     ' Write the geometry object created with SimpleRTK to file '
 

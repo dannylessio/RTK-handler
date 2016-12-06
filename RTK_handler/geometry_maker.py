@@ -24,8 +24,11 @@ class GeometryMaker(object):
     def __init__(self):
         # Detector variables
         try:
-            self._Nv = float(
-                input("insert Nv - Image Height, pixel number, v dir\n"))
+            self._source_to_isocenter_distance = float(
+                input("insert SID  - Source to Isocenter Distance, in mm\n"))
+            
+            self._source_to_detector_distance = float(
+                input("insert SDD  - Source to Detector Distance, in mm\n"))
 
             self._du = float(
                 input("insert du - Single pixel length in mm, u dir\n"))
@@ -33,11 +36,8 @@ class GeometryMaker(object):
             self._dv = float(
                 input("insert dv - Single pixel length in mm, v dir\n"))
 
-            self._source_to_isocenter_distance = float(
-                input("insert SID  - Source to Isocenter Distance, in mm\n"))
-            
-            self._source_to_detector_distance = float(
-                input("insert SDD  - Source to Detector Distance, in mm\n"))
+            self._Nv = float(
+                input("insert Nv - Image Height, pixel number, v dir\n"))
 
         except ValueError:
             print("Error on input format")

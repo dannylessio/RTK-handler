@@ -24,6 +24,15 @@ class GeometryMaker(object):
     def __init__(self):
         # Detector variables
         try:
+            self._Nv = float(
+                input("insert Nv - Image Height, pixel number, v dir\n"))
+
+            self._du = float(
+                input("insert du - Single pixel length in mm, u dir\n"))
+
+            self._dv = float(
+                input("insert dv - Single pixel length in mm, v dir\n"))
+
             self._source_to_isocenter_distance = float(
                 input("insert SID  - Source to Isocenter Distance, in mm\n"))
             
@@ -57,10 +66,12 @@ class GeometryMaker(object):
 
             for projection in self._projectionObjectList: 
 
-                # If the isocenter changes between projections, update this.
-                proj_offset_x = 0
-                proj_offset_y = 0
+                # offset from detector origin (iso_x,iso_y) 
+                # to image origin (0,0,0)
+                proj_offset_x = - (projection.Niso_u * self._du)
+                proj_offset_y = - (self._Nv - 1 - projection.Niso_v) * self._dv
 
+                # AddProjection
                 self._rtk_geometry.AddProjection(
                     self._source_to_isocenter_distance,
                     self._source_to_detector_distance,

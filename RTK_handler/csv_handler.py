@@ -11,18 +11,11 @@ class CsvHandler(object):
     of the projections.
 
     The csv file must be set as follows:
-    +-----------+-------+----+
-    | proj_name | angle | Io |
-    +-----------+-------+----+
+    +-----------+-------+--------+--------+----+
+    | proj_name | angle | Niso_u | Niso_v | Io |
+    +-----------+-------+--------+--------+----+
 
-    For example, Row 0 must be like:
-    +-----------+---------+----------+
-    | 00000.tif | 0       | 1604.774 |
-    +-----------+---------+----------+
-
-    And so on..
-
-    Than it returns a list of objects (from Projection class) having those attributes.
+    Than it returns a list of Projection objects.
     '''
 
     def __init__(self):
@@ -65,7 +58,9 @@ class CsvHandler(object):
                 Projection(
                     row[0],
                     row[1],
-                    row[2]))
+                    row[2],
+                    row[3],
+                    row[4]))
 
         # Pint how many projections are successfully readed
         print("\nNumber of projections successfully readed: " +

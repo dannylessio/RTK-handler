@@ -7,24 +7,6 @@ from .csv_handler import CsvHandler
 
 class ProjectionsHandler(object):
 
-    def __init__(self):
-        try:
-            self._du = float(
-                input("insert du - Single pixel length in mm, u dir\n"))
-
-            self._dv = float(
-                input("insert dv - Single pixel length in mm, v dir\n"))
-
-            self._Niso_u = float(
-                input("insert Niso_u - Isocenter position, pixel number, u dir\n"))
-
-            self._Niso_v = float(
-                input("insert Niso_u - Isocenter position, pixel number, v dir\n"))
-
-        except ValueError:
-            print("Error on input format")
-            sys.exit()
-
     def normalize_mha(self):
         inputPath = os.path.join('projections', 'non_normalized')
         output_path = os.path.join(
@@ -85,51 +67,21 @@ class ProjectionsHandler(object):
 
             # append it to the list of normalized projections
             norm_proj_list.append(proj)
-
-        
+   
         # Join normalized projections into a single 3D MHA image
         norm_stack = sitk.JoinSeries(norm_proj_list)
         
         # Copy the meta-information from original Stack
         norm_stack.CopyInformation(stack)
 
+        # Force Origin to (0,0,0)
+        norm_stack.SetOrigin([0,0,0])
+
         # Write it to file
         sitk.WriteImage(norm_stack, output_path)
         print(output_path + " successfully writed")
            
-
-    def set_mha_origin_as_isocenter_position(self):
-        
-        inputPath = os.path.join(
-                'projections',
-                'normalized',
-                'normalized.mha')
-        
-        output_path = os.path.join(
-                'projections',
-                'normalized',
-                'normalized.mha')
-
-        # read it
-        normalized_mha = sitk.ReadImage(inputPath)
-
-        # Image Origin as Isocenter position on ITK reference system.
-        # origin_x = - Niso_u * du
-        # origin_y = - (Nv - Niso_v - 1) * dv
-
-        # retrieve Nv as image height
-        Nv = normalized_mha.GetHeight()
-        origin_x = - (self._Niso_u * self._du)
-        origin_y = - (Nv - self._Niso_v - 1) * self._dv
-
-        # third dimension doen't matter, we have a stack of 2D slices.
-        normalized_mha.SetOrigin([origin_x, origin_y, 0])
-        
-        # replace normalized mha
-        sitk.WriteImage(normalized_mha, output_path)
-        print("Updated normalized origin:",origin_x,origin_y,0)
-
-
+           
 def normalize_projections():
     # Create ProjectionsHandler object
     ph = ProjectionsHandler()
@@ -137,5 +89,3 @@ def normalize_projections():
     # Perform normalization
     ph.normalize_mha()
 
-    # Change MHA origin
-    ph.set_mha_origin_as_isocenter_position()

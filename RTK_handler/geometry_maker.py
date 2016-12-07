@@ -68,7 +68,7 @@ class GeometryMaker(object):
 
                 # offset from detector origin (iso_x,iso_y) 
                 # to image origin (0,0,0)
-                proj_offset_x = - (projection.Niso_u * self._du)
+                proj_offset_x = - (projection.Niso_u) * self._du
                 proj_offset_y = - (self._Nv - 1 - projection.Niso_v) * self._dv
 
                 # AddProjection

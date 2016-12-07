@@ -1,9 +1,0 @@
-insert example:
-
-insert Nu   - Number of pixel in u dir
-insert Nv   - Number of pixel in v dir
-insert du   - Single pixel length in mm, u dir
-insert dv   - Single pixel length in mm, v dir
-insert SID  - Source to Isocenter Distance, in mm
-insert SDD  - Source to Detector Distance, in mm
-

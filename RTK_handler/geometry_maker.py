@@ -26,7 +26,7 @@ class GeometryMaker(object):
         try:
             self._source_to_isocenter_distance = float(
                 input("insert SID  - Source to Isocenter Distance, in mm\n"))
-            
+
             self._source_to_detector_distance = float(
                 input("insert SDD  - Source to Detector Distance, in mm\n"))
 
@@ -43,7 +43,7 @@ class GeometryMaker(object):
             print("Error on input format")
             sys.exit()
 
-        # Other variables    
+        # Other variables
         self._geometry_name = 'geometry.xml'
         self._projectionObjectList = []
         self._rtk_geometry = False
@@ -57,16 +57,15 @@ class GeometryMaker(object):
         self._projectionObjectList = self._csvh.get_projection_object_list_from_csv(
             csvPath)
 
-
     ' Uses the SimpleRTK library in order to setting up the geometry '
 
     def fill_rtk_geometry(self):
         try:
             self._rtk_geometry = srtk.ThreeDCircularProjectionGeometry()
 
-            for projection in self._projectionObjectList: 
+            for projection in self._projectionObjectList:
 
-                # offset from detector origin (iso_x,iso_y) 
+                # offset from detector origin (iso_x,iso_y)
                 # to image origin (0,0,0)
                 proj_offset_x = - (projection.Niso_u) * self._du
                 proj_offset_y = - (self._Nv - 1 - projection.Niso_v) * self._dv
@@ -81,7 +80,6 @@ class GeometryMaker(object):
         except:
             print("Error using SimpleRTK.ThreeDCircularProjectionGeometry().")
             sys.exit(1)
-
 
     ' Write the geometry object created with SimpleRTK to file '
 

@@ -10,7 +10,7 @@ __pkl_file_path = os.path.join(home, '.RTK_handler.pkl')
 
 '''
     __path_of contains this folder structure:
-    
+
     .
     ├── csv
     ├── geometry
@@ -35,7 +35,7 @@ __path_of = {
     'reconstructions_rtkfdk': os.path.join(
         'reconstructions',
         'rtkfdk'),
-    }
+}
 
 
 ''' Reads from keyboard the RTK-bin absolute path and stores it inside conf.py '''
@@ -81,6 +81,7 @@ def assert_RTK_path():
     Creates the folder structure:
 '''
 
+
 def make_structure():
     try:
         for directory in sorted(__path_of):
@@ -96,6 +97,7 @@ def make_structure():
 '''
     Check if the folder structure exist
 '''
+
 
 def assert_structure():
     try:
@@ -160,7 +162,11 @@ def add_RTK_path_to(command):
 
 def execute(command):
     # execute, wait and print to console
-    popen = subprocess.Popen(command, stdout=subprocess.PIPE, universal_newlines=True)
+    popen = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        universal_newlines=True)
+    
     for stdout_line in iter(popen.stdout.readline, ""):
         yield stdout_line
 
@@ -169,56 +175,56 @@ def execute(command):
 
     if return_code:
         raise subprocess.CalledProcessError(return_code, command)
-    
+
 
 def rtkfdk_reconstruction():
 
-        rootFolder = os.getcwd()
+    rootFolder = os.getcwd()
 
-        projections_folder = os.path.join(
-            rootFolder, __path_of['projections_normalized'])
-        projections_name = str(os.listdir(projections_folder)[0])
+    projections_folder = os.path.join(
+        rootFolder, __path_of['projections_normalized'])
+    projections_name = str(os.listdir(projections_folder)[0])
 
-        output_path = os.path.join(
-            rootFolder,
-            __path_of['reconstructions_rtkfdk'],
-            'rtkfdk_recon.mha')
+    output_path = os.path.join(
+        rootFolder,
+        __path_of['reconstructions_rtkfdk'],
+        'rtkfdk_recon.mha')
 
-        geometry_path = os.path.join(
-            rootFolder, __path_of['geometry'], 'geometry.xml')
+    geometry_path = os.path.join(
+        rootFolder, __path_of['geometry'], 'geometry.xml')
 
-        spacing_x = str(input("Insert spacing on x direction\n"))
-        spacing_y = str(input("Insert spacing on y direction\n"))
-        spacing_z = str(input("Insert spacing on z direction\n"))
+    spacing_x = str(input("Insert spacing on x direction\n"))
+    spacing_y = str(input("Insert spacing on y direction\n"))
+    spacing_z = str(input("Insert spacing on z direction\n"))
 
-        dimension_x = str(input("insert x dimension\n"))
-        dimension_y = str(input("insert y dimension\n"))
-        dimension_z = str(input("insert z dimension\n"))
+    dimension_x = str(input("insert x dimension\n"))
+    dimension_y = str(input("insert y dimension\n"))
+    dimension_z = str(input("insert z dimension\n"))
 
-        command = [
-            'rtkfdk',
-            '-p',
-            str(projections_folder),
-            '-r',
-            str(projections_name),
-            '-g',
-            str(geometry_path),
-            '-o',
-            str(output_path),
-            '--dimension',
-            str(dimension_x),
-            str(dimension_y),
-            str(dimension_z),
-            '--spacing',
-            str(spacing_x),
-            str(spacing_y),
-            str(spacing_z),
-            '-v'
-        ]
+    command = [
+        'rtkfdk',
+        '-p',
+        str(projections_folder),
+        '-r',
+        str(projections_name),
+        '-g',
+        str(geometry_path),
+        '-o',
+        str(output_path),
+        '--dimension',
+        str(dimension_x),
+        str(dimension_y),
+        str(dimension_z),
+        '--spacing',
+        str(spacing_x),
+        str(spacing_y),
+        str(spacing_z),
+        '-v'
+    ]
 
-        # assembly
-        command = add_RTK_path_to(command)
+    # assembly
+    command = add_RTK_path_to(command)
 
-        # execute
-        for line in execute(command):
-            print(line, end="")
+    # execute
+    for line in execute(command):
+        print(line, end="")

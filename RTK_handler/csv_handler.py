@@ -3,6 +3,7 @@ import sys
 import glob
 import pyexcel
 
+
 class Projection(object):
     """ This class handles all the parameters regarding one projection """
 

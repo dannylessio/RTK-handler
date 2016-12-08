@@ -10,9 +10,9 @@ class ProjectionsHandler(object):
     def normalize_mha(self):
         inputPath = os.path.join('projections', 'non_normalized')
         output_path = os.path.join(
-                'projections',
-                'normalized',
-                'normalized.mha')
+            'projections',
+            'normalized',
+            'normalized.mha')
 
         # Getting MHA name
         path = os.path.join(inputPath, '*.mha')
@@ -39,7 +39,7 @@ class ProjectionsHandler(object):
         width = stack.GetWidth()
         height = stack.GetHeight()
         depth = stack.GetDepth()
-        
+
         # list of normalized projections
         norm_proj_list = []
 
@@ -51,7 +51,7 @@ class ProjectionsHandler(object):
         # Normalize
         for zslice in range(0, depth):
 
-            print("Normalize projection n " + str(zslice+1))
+            print("Normalize projection n " + str(zslice + 1))
 
             extractor = sitk.ExtractImageFilter()
             extractor.SetSize([width, height, 0])
@@ -59,7 +59,7 @@ class ProjectionsHandler(object):
 
             # Extract a single projection
             proj = extractor.Execute(stack)
-                
+
             # Normalize it
             proj = proj * float(1 / listOfProjectionObjects[zslice].io)
             proj = sitk.Log(proj)
@@ -67,25 +67,24 @@ class ProjectionsHandler(object):
 
             # append it to the list of normalized projections
             norm_proj_list.append(proj)
-   
+
         # Join normalized projections into a single 3D MHA image
         norm_stack = sitk.JoinSeries(norm_proj_list)
-        
+
         # Copy the meta-information from original Stack
         norm_stack.CopyInformation(stack)
 
         # Force Origin to (0,0,0)
-        norm_stack.SetOrigin([0,0,0])
+        norm_stack.SetOrigin([0, 0, 0])
 
         # Write it to file
         sitk.WriteImage(norm_stack, output_path)
         print(output_path + " successfully writed")
-           
-           
+
+
 def normalize_projections():
     # Create ProjectionsHandler object
     ph = ProjectionsHandler()
 
     # Perform normalization
     ph.normalize_mha()
-

@@ -2,8 +2,8 @@ import SimpleITK as sitk
 import sys
 import os
 import glob
-from .projection import Projection
 from .csv_handler import CsvHandler
+
 
 class ProjectionsHandler(object):
 

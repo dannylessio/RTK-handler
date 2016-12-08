@@ -1,5 +1,5 @@
-import os
 from os.path import expanduser
+import os
 import sys
 import pickle
 import subprocess
@@ -36,28 +36,6 @@ __path_of = {
         'reconstructions',
         'rtkfdk'),
     }
-
-
-def execute_bin_inside_RTK_bin(command):
-    # pick up the RTK-bin path from pickle
-    f = open(__pkl_file_path, "rb")
-    readed = pickle.load(f)
-    f.close()
-
-    # enter to the bin folder
-    rtk_path = readed['rtk_path']
-    rtk_bin_path = os.path.join(rtk_path, 'bin')
-
-    # assembly the command
-    command_name = command[0]
-    full_command = os.path.join(rtk_bin_path, command_name)
-    command[0] = full_command
-
-    # execute, wait and print to console
-    popen = subprocess.Popen(command, stdout=subprocess.PIPE)
-    popen.wait()
-    output = popen.stdout.read()
-    print(str(output))
 
 
 ''' Reads from keyboard the RTK-bin absolute path and stores it inside conf.py '''
@@ -162,6 +140,37 @@ def clean_structure():
     print("Structure successfully cleaned.")
 
 
+def add_RTK_path_to(command):
+    # pick up the RTK-bin path from pickle
+    f = open(__pkl_file_path, "rb")
+    readed = pickle.load(f)
+    f.close()
+
+    # enter to the bin folder
+    rtk_path = readed['rtk_path']
+    rtk_bin_path = os.path.join(rtk_path, 'bin')
+
+    # assembly the command
+    command_name = command[0]
+    full_command = os.path.join(rtk_bin_path, command_name)
+    command[0] = full_command
+
+    return command
+
+
+def execute(command):
+    # execute, wait and print to console
+    popen = subprocess.Popen(command, stdout=subprocess.PIPE, universal_newlines=True)
+    for stdout_line in iter(popen.stdout.readline, ""):
+        yield stdout_line
+
+    popen.stdout.close()
+    return_code = popen.wait()
+
+    if return_code:
+        raise subprocess.CalledProcessError(return_code, command)
+    
+
 def rtkfdk_reconstruction():
 
         rootFolder = os.getcwd()
@@ -192,20 +201,24 @@ def rtkfdk_reconstruction():
             str(projections_folder),
             '-r',
             str(projections_name),
-            '-o',
-            str(output_path),
             '-g',
             str(geometry_path),
-            '--spacing',
-            str(spacing_x),
-            str(spacing_y),
-            str(spacing_z),
+            '-o',
+            str(output_path),
             '--dimension',
             str(dimension_x),
             str(dimension_y),
             str(dimension_z),
+            '--spacing',
+            str(spacing_x),
+            str(spacing_y),
+            str(spacing_z),
             '-v'
         ]
 
-        print("Reconstructing and writing...")
-        execute_bin_inside_RTK_bin(command)
+        # assembly
+        command = add_RTK_path_to(command)
+
+        # execute
+        for line in execute(command):
+            print(line, end="")

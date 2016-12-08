@@ -2,7 +2,7 @@ import SimpleRTK as srtk
 import sys
 import os
 import glob
-from .projection import Projection
+from .csv_handler import Projection
 from .csv_handler import CsvHandler
 
 

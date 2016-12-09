@@ -45,7 +45,7 @@ def main():
         '-v',
         '--version',
         action='version',
-        version='%(prog)s 0.2')
+        version='%(prog)s 1.0')
 
     # Print the help if no options are given
     if len(sys.argv) < 2:

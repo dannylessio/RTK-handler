@@ -13,39 +13,39 @@ def main():
 
     parser.add_argument('-s', action='store_true', default=False,
                         dest='make_structure',
-                        help='Create the folder structure.')
+                        help='create the folder structure')
 
     parser.add_argument('-g', action='store_true', default=False,
                         dest='create_geometry',
-                        help='Create the .xml geometry reading from csv file.')
+                        help='create the XML geometry')
 
     parser.add_argument(
         '-n',
         action='store_true',
         default=False,
         dest='normalize_projections',
-        help='Normalize the mha set of projections reading from a csv file.')
+        help='normalize MHA stack')
+
+    parser.add_argument('-r', action='store_true', default=False,
+                        dest='rtkfdk_reconstruction',
+                        help='reconstruct with rtkfdk')
 
     parser.add_argument(
         '-c',
         action='store_true',
         default=False,
         dest='clean_structure',
-        help='Delete the folder structure, preserve relevant data.')
+        help='delete the folder structure')
 
     parser.add_argument('-p', action='store_true', default=False,
                         dest='insert_rtk_path',
-                        help='Insert the path relative to RTK-bin folder.')
-
-    parser.add_argument('-r', action='store_true', default=False,
-                        dest='rtkfdk_reconstruction',
-                        help='Reconstruct with rtkfdk')
+                        help='insert RTK-bin folder path')
 
     parser.add_argument(
         '-v',
         '--version',
         action='version',
-        version='%(prog)s 1.0')
+        version='%(prog)s 0.2')
 
     # Print the help if no options are given
     if len(sys.argv) < 2:

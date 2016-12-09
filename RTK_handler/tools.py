@@ -44,10 +44,10 @@ __path_of = {
 def insert_RTK_path():
     # Read abs path from stdin
     abs_path = input(
-        "Enter your absolute RTK-bin folder path like this: /home/dlessio/RTK-bin\n")
+        "Enter the full RTK-bin path\n")
 
     try:
-        print("Testing if path is correct...")
+        print("Testing if the path is correct...")
         path = os.path.join(abs_path, 'bin', 'HelloWorld')
         popen = subprocess.Popen(path, stdout=subprocess.PIPE)
         popen.wait()
@@ -61,7 +61,7 @@ def insert_RTK_path():
         pickle.dump(stored, f)
         f.close()
 
-        print("Cofiguration success!")
+        print("Configuration success!")
 
     except:
         print("Error on RTK-bin path, cannot execute the HelloWorld binary.")

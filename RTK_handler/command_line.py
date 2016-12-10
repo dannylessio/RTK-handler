@@ -11,9 +11,12 @@ def main():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-s', action='store_true', default=False,
-                        dest='make_structure',
-                        help='create the folder structure')
+    parser.add_argument(
+        '-s', 
+        action='store_true', 
+        default=False,
+        dest='make_structure',
+        help='create the folder structure')
 
     parser.add_argument('-g', action='store_true', default=False,
                         dest='create_geometry',
@@ -58,20 +61,15 @@ def main():
     # Chech if the parsed options are True
     if options.make_structure:
         make_structure()
-        sys.exit(0)
-
+        
     if options.create_geometry:
         assert_structure()
-        # assert_csv()
         create_geometry()
-        sys.exit(0)
-
+        
     if options.normalize_projections:
         assert_structure()
-        # assert_csv()
         normalize_projections()
-        sys.exit(0)
-
+        
     if options.insert_rtk_path:
         insert_RTK_path()
         sys.exit(0)
@@ -84,7 +82,6 @@ def main():
     if options.rtkfdk_reconstruction:
         assert_structure()
         assert_RTK_path()
-        # assert_normalized_proj()
         rtkfdk_reconstruction()
         sys.exit(0)
 

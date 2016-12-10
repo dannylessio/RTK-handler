@@ -31,7 +31,8 @@ __path_of = {
     'projections_normalized': os.path.join(
         'projections',
         'normalized'),
-    'reconstructions': os.path.join('reconstructions'),
+    'reconstructions': os.path.join(
+        'reconstructions'),
     'reconstructions_rtkfdk': os.path.join(
         'reconstructions',
         'rtkfdk'),
@@ -41,6 +42,23 @@ __path_of = {
 ''' Reads from keyboard the RTK-bin absolute path and stores it inside conf.py '''
 
 
+def execute(command):
+    # execute, wait and print to console
+    popen = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        universal_newlines=True)
+    
+    for line in iter(popen.stdout.readline, ""):
+        yield line
+
+    popen.stdout.close()
+    return_code = popen.wait()
+
+    if return_code:
+        raise subprocess.CalledProcessError(return_code, command)
+
+
 def insert_RTK_path():
     # Read abs path from stdin
     abs_path = input(
@@ -48,17 +66,18 @@ def insert_RTK_path():
 
     try:
         print("Testing if the path is correct...")
-        path = os.path.join(abs_path, 'bin', 'HelloWorld')
-        popen = subprocess.Popen(path, stdout=subprocess.PIPE)
-        popen.wait()
-        output = popen.stdout.read()
+        
+        command = os.path.join(abs_path, 'bin', 'HelloWorld')
+        
+        # execute
+        for line in execute(command):
+            print(line, end="")
 
-        stored = {'rtk_path': abs_path}
+        store = {'rtk_path': abs_path}
 
-        # Write this path on file in binary mode, Overwrites the file if it
-        # exists.
+        # Write this path on file in binary mode
         f = open(__pkl_file_path, "wb")
-        pickle.dump(stored, f)
+        pickle.dump(store, f)
         f.close()
 
         print("Configuration success!")
@@ -120,17 +139,12 @@ def clean_structure():
     # copy relevant files inside os.getcwd() folder
     dest = os.getcwd()
 
-    srcList = [
-        __path_of['csv'],
-        __path_of['geometry'],
-        __path_of['projections_non_normalized'],
-        __path_of['reconstructions_rtkfdk'],
-    ]
-
-    for src in srcList:
-        src_files = os.listdir(src)
-        for file_name in src_files:
-            full_file_name = os.path.join(src, file_name)
+    for directory in sorted(__path_of):
+        dir_files = os.listdir(__path_of[directory])
+        for file_name in dir_files:
+            full_file_name = os.path.join(
+                __path_of[directory], 
+                file_name)
             if (os.path.isfile(full_file_name)):
                 shutil.move(full_file_name, dest)
 
@@ -140,6 +154,7 @@ def clean_structure():
     shutil.rmtree(__path_of['projections'])
     shutil.rmtree(__path_of['reconstructions'])
     print("Structure successfully cleaned.")
+
 
 
 def add_RTK_path_to(command):
@@ -158,23 +173,6 @@ def add_RTK_path_to(command):
     command[0] = full_command
 
     return command
-
-
-def execute(command):
-    # execute, wait and print to console
-    popen = subprocess.Popen(
-        command,
-        stdout=subprocess.PIPE,
-        universal_newlines=True)
-    
-    for stdout_line in iter(popen.stdout.readline, ""):
-        yield stdout_line
-
-    popen.stdout.close()
-    return_code = popen.wait()
-
-    if return_code:
-        raise subprocess.CalledProcessError(return_code, command)
 
 
 def rtkfdk_reconstruction():
